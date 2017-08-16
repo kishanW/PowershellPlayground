@@ -1,7 +1,7 @@
 #1: SETUP FILE DROP PATH
 $global:outputFileDirectoryUrl = "C:\sitecore_poweshell"
 
-#2: SETUP THE TEMPLARTES TO UPDATE SECURITY
+#2: SETUP THE TEMPLATES TO UPDATE SECURITY
 $templatesToUpdate = @(
     {49181A09-7514-424B-BAA2-C7CF0551D2F7} 	#template1
     ,{49181A09-7514-424B-BAA2-C7CF0551D2F7} #template2
