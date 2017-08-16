@@ -99,7 +99,6 @@ $global:totalCount = ($itemsToUpdate | Measure-Object).Count
 GetShouldExportInput
 
 #WRITE EXISTING SECURITY SETTINGS TO CSV FILE
-
 If(($global:shouldExport.ToLower()) -like "y")
 {
     WriteExistingSecurityDetailsToCSV
