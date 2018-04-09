@@ -41,15 +41,15 @@ $itemsToDelete = @(Get-ChildItem -Path $global:pathToDelete -Recurse)
 #GET THE TOTAL COUNT
 $global:totalCount = ($itemsToDelete | Measure-Object).Count + 1
 
-#UPDATE SECURITY TO BY APPENDING NEW
 $global:currentCount = 0
 
+#ITEM DELETE START
 Write-Host "Total Items to be deleted: " $global:totalCount -ForegroundColor Red -BackgroundColor Yellow
 
 DeleteItems
-#SECURITY UPDATE - END
 
 Write-Host "Item deletion complete." -ForegroundColor Red -BackgroundColor Yellow 
+#ITEM DELETE END
 
 #JOB - END
 $stopwatch.Stop()
