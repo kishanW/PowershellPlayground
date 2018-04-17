@@ -15,6 +15,7 @@ $global:totalCount = [int] 0
 $global:currentCount = [int] 0
 $global:skippedItemCount = [int] 0
 $global:shouldExport = [string] ""
+$global:shouldReplaceEntireSecurityString = [string] ""
 
 #HELPER FUNCTIONS
 function WriteExistingSecurityDetailsToCSV{
@@ -60,14 +61,19 @@ function UpdateItemSecurity{
     
     $itemsToUpdate | ForEach-Object {
         $shouldSkip = (($_.Fields["__Security"].Value.ToLower()) -match ([RegEx]::Escape($newSecurityValue.ToLower())))
-        If($shouldSkip)
-        {
+        If ($shouldSkip) {
             $global:skippedItemCount = $global:skippedItemCount + 1
         }
-        Else
-        {
+        Else {
             $_.BeginEdit() | Out-Null
-            $_.Fields["__Security"].Value = "{0}{1}" -f $_.Fields["__Security"].Value,$newSecurityValue
+
+            If (($global:shouldReplaceEntireSecurityString.ToLower()) -like "y") {
+                $_.Fields["__Security"].Value = $newSecurityValue
+            }
+            Else {
+                $_.Fields["__Security"].Value = "{0}{1}" -f $_.Fields["__Security"].Value, $newSecurityValue
+            }
+            
             $_.EndEdit() | Out-Null
         }
         
@@ -81,7 +87,11 @@ function UpdateItemSecurity{
 }
 
 function GetShouldExportInput {
-    Param ([string]$global:shouldExport=(Read-Host "Do you want to export the existing security values? (y/n)"))
+    Param ([string]$global:shouldExport = (Read-Host "Do you want to export the existing security values? (y/n)"))
+}
+
+function GetShouldReplaceEntireSecurityString {
+    Param ([string]$global:shouldReplaceEntireSecurityString = (Read-Host "Do you want to replace the entire security string with the new security string? (y/n)"))
 }
 
 #JOB - START
@@ -97,6 +107,9 @@ $global:totalCount = ($itemsToUpdate | Measure-Object).Count
 
 #GET USER INPUT FOR EXPORTING EXISTING SECURITY
 GetShouldExportInput
+
+#GET USER INPUT FOR SHOULD REPLACE THE ENTIRE SECURITY STRING
+GetShouldReplaceEntireSecurityString
 
 #WRITE EXISTING SECURITY SETTINGS TO CSV FILE
 If(($global:shouldExport.ToLower()) -like "y")
